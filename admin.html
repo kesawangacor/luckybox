@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Console - Luckybox Manager</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a2e; color: white; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #16213e; padding: 20px; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #444; padding: 10px; text-align: center; }
+        th { background: #e94560; }
+        input, button { padding: 10px; border-radius: 5px; border: none; }
+        .btn-toggle { cursor: pointer; padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+        .active { background: #27ae60; color: white; }
+        .inactive { background: #e74c3c; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🛠 Admin Console Luckybox</h2>
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="newUserId" placeholder="Masukkan ID User baru...">
+            <button onclick="addUser()" style="background: #f1c40f; color: black; font-weight: bold;">+ Tambah User</button>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID User</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="userTable">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Simulasi Database di LocalStorage
+        let users = JSON.parse(localStorage.getItem('luckybox_db')) || [];
+
+        function renderTable() {
+            const tbody = document.getElementById('userTable');
+            tbody.innerHTML = '';
+            users.forEach((user, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td><span class="status-badge ${user.status === 'Aktif' ? 'active' : 'inactive'}">${user.status}</span></td>
+                        <td>
+                            <button class="btn-toggle" onclick="toggleStatus(${index})">Toggle Status</button>
+                            <button onclick="deleteUser(${index})" style="background:none; color:gray; border:none; cursor:pointer;">[Hapus]</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            localStorage.setItem('luckybox_db', JSON.stringify(users));
+        }
+
+        function addUser() {
+            const idInput = document.getElementById('newUserId');
+            if(idInput.value) {
+                users.push({ id: idInput.value, status: 'Nonaktif' });
+                idInput.value = '';
+                renderTable();
+            }
+        }
+
+        function toggleStatus(index) {
+            users[index].status = users[index].status === 'Aktif' ? 'Nonaktif' : 'Aktif';
+            renderTable();
+        }
+
+        function deleteUser(index) {
+            if(confirm('Hapus ID ini?')) {
+                users.splice(index, 1);
+                renderTable();
+            }
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>
