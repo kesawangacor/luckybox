@@ -153,53 +153,7 @@
                 showFinalResult(hasil);
             }, 2500);
         }
-// --- TAMBAHKAN LOGIKA INI DI DALAM <script> ---
 
-function checkUserStatus() {
-    // Meminta ID User saat halaman dibuka (Atau bisa buat input field khusus)
-    let userId = prompt("Silahkan masukkan ID User Anda untuk bermain:");
-    
-    if (!userId) {
-        alert("ID Wajib diisi!");
-        location.reload();
-        return;
-    }
-
-    // Cek ke "database"
-    let db = JSON.parse(localStorage.getItem('luckybox_db')) || [];
-    let userFound = db.find(u => u.id === userId);
-
-    if (!userFound) {
-        alert("ID User tidak terdaftar!");
-        location.reload();
-    } else if (userFound.status === 'Nonaktif') {
-        alert("ID Anda belum diaktifkan oleh Admin. Silahkan hubungi CS.");
-        location.reload();
-    } else {
-        alert("Selamat datang! ID Anda Aktif. Silahkan buka kotak.");
-        // Simpan ID yang sedang login
-        sessionStorage.setItem("currentUser", userId);
-    }
-}
-
-// Panggil fungsi cek status saat halaman load
-window.onload = () => {
-    // Jika belum login ID, minta ID
-    if (!sessionStorage.getItem("currentUser")) {
-        checkUserStatus();
-    }
-
-    // Logika simpananmu yang lama tetap di bawah sini
-    if (localStorage.getItem("boxDone") === "true") {
-        const win = localStorage.getItem("boxWin");
-        actionBtn.disabled = true;
-        actionBtn.innerText = "KESEMPATAN HABIS";
-        loginContainer.style.display = "block";
-        mysteryBox.style.opacity = "0.3";
-        resultText.innerHTML = `HASIL: Rp ${win} <br><small>(Status: <span class="status-badge">Menunggu Aktivasi</span>)</small>`;
-    }
-};
-        
         function showFinalResult(hasil) {
             localStorage.setItem("boxDone", "true");
             localStorage.setItem("boxWin", hasil);
